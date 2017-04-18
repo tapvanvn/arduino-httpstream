@@ -10,8 +10,11 @@
 #include <stdint.h>
 #include "SimpleHashTable.hpp"
 
-#define HTTP_STREAM_BUFF_LEN 256
+//#define HTTP_STREAM_BUFF_LEN 256
 
+using namespace std;
+
+template <size_t HeaderSize, size_t BufferLen>
 class HttpStream
 {
 public:
@@ -46,7 +49,7 @@ public:
         char *_val;
     };
 
-    typedef SimpleHashTable<3, Value> KeyValuePair;
+    typedef SimpleHashTable<HeaderSize, Value> KeyValuePair;
 
     class Token
     {
@@ -84,7 +87,7 @@ public:
         )
         {
             _buffer[_curr_buff++] = c;
-            if(_curr_buff == HTTP_STREAM_BUFF_LEN)
+            if(_curr_buff == BufferLen)
             {
                 meaning();
                 _curr_buff = 0;
@@ -184,7 +187,7 @@ private:
     };
     Token _token[50];
     uint8_t _curr_token;
-    char _buffer[HTTP_STREAM_BUFF_LEN];
+    char _buffer[BufferLen];
     uint16_t _curr_buff;
     uint8_t _state;
     KeyValuePair _headers;
